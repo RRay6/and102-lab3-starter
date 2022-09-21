@@ -53,28 +53,19 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
         progressBar.show()
 
         // Create and set up an AsyncHTTPClient() here
-
-        // Using the client, perform the HTTP request
-
-        // Create and set up an AsyncHTTPClient() here
         val client = AsyncHttpClient()
         val params = RequestParams()
         params["api-key"] = API_KEY
 
-        // Using the client, perform the HTTP request
-//        client[
-//                "https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json",
-//                params,
-//                object : JsonHttpResponseHandler()
-//                { //connect these callbacks to your API call
-//                    override fun onSuccess(
-//                //... e
         client[
                 "https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json",
                 params,
                 object : JsonHttpResponseHandler() {
                     //connect these callbacks to your API call
                     override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
+
+                        progressBar.hide()
+
                         // Access a JSON array response with `json.jsonArray`
                         val books = json.jsonObject.getJSONObject("results").getJSONArray("books")
                         // books.getJSONObject(2)
@@ -84,76 +75,27 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
                         val models : List<BestSellerBook> = gson.fromJson(books.toString(), arrayBookType)
                         recyclerView.adapter = BestSellerBooksRecyclerViewAdapter(models, this@BestSellerBooksFragment)
 
+                        Log.d("BestSellerBooksFragment", "response successful")
 
-
-//                        if (json?.jsonArray != null) {
-//                            Log.d("DEBUG ARRAY", json.jsonArray.toString())
-//                            // Access a JSON object response with `json.jsonObject`
-//                            Log.d("DEBUG OBJECT", json.jsonObject.toString())
-//                        }
-//                        else
-//                        {
-//                            Log.d("DEBUG ARRAY", "NULL ARRAY")
-//                        }
                     }
 
                     override fun onFailure(
                         statusCode: Int,
                         headers: Headers?,
-                        response: String,
-                        throwable: Throwable?
+                        errorResponse: String,
+                        t: Throwable?
                     ) {
 
-                        Log.e("error", "onfailure was reached")
+                        // The wait for a response is over
+                        progressBar.hide()
+
+                        // If the error is not null, log it!
+                        t?.message?.let {
+                            Log.e("BestSellerBooksFragment", errorResponse)
+                    }
+
                 }
         }]
-
-
-
-                    /* Uncomment me once you complete the above sections!
-                    {
-                        /*
-                         * The onSuccess function gets called when
-                         * HTTP response status is "200 OK"
-                         */
-                        override fun onSuccess(
-                            statusCode: Int,
-                            headers: Headers,
-                            json: JsonHttpResponseHandler.JSON
-                        ) {
-                            // The wait for a response is over
-                            progressBar.hide()
-
-                            //TODO - Parse JSON into Models
-
-                            val models : List<BestSellerBook> = null // Fix me!
-                            recyclerView.adapter = BestSellerBooksRecyclerViewAdapter(models, this@BestSellerBooksFragment)
-
-                            // Look for this in Logcat:
-                            Log.d("BestSellerBooksFragment", "response successful")
-                        }
-
-                        /*
-                         * The onFailure function gets called when
-                         * HTTP response status is "4XX" (eg. 401, 403, 404)
-                         */
-                        override fun onFailure(
-                            statusCode: Int,
-                            headers: Headers?,
-                            errorResponse: String,
-                            t: Throwable?
-                        ) {
-                            // The wait for a response is over
-                            progressBar.hide()
-
-                            // If the error is not null, log it!
-                            t?.message?.let {
-                                Log.e("BestSellerBooksFragment", errorResponse)
-                            }
-                        }
-                    }]
-                    */
-
     }
 
     /*

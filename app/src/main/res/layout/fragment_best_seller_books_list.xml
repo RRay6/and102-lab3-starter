@@ -23,5 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
-        android:theme="@style/Widget.AppCompat.ProgressBar" />
+        android:theme="@style/Widget.AppCompat.ProgressBar"
+        android:visibility="invisible" />
 </FrameLayout>
